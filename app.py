@@ -18,7 +18,7 @@ def health():
     return jsonify({
         "status": "healthy",
         "service": "simple-api"
-    }), 200
+    }), 500
 
 @app.route('/users')
 def get_users():
