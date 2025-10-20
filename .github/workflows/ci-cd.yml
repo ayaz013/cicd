@@ -1,0 +1,109 @@
+name: CI/CD Pipeline for Simple REST API
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Test API endpoints
+      run: |
+        # Start the Flask app in background
+        python app.py &
+        APP_PID=$!
+        
+        # Wait for the app to start
+        sleep 5
+        
+        # Run the tests
+        python -m pytest test_api.py -v
+        
+        # Stop the Flask app
+        kill $APP_PID
+    
+    - name: Test all endpoints individually
+      run: |
+        # Start the Flask app in background
+        python app.py &
+        APP_PID=$!
+        
+        # Wait for the app to start
+        sleep 5
+        
+        # Test each endpoint individually
+        echo "Testing / endpoint..."
+        curl -f http://localhost:5000/ || exit 1
+        
+        echo "Testing /health endpoint..."
+        curl -f http://localhost:5000/health || exit 1
+        
+        echo "Testing /users endpoint..."
+        curl -f http://localhost:5000/users || exit 1
+        
+        echo "Testing /products endpoint..."
+        curl -f http://localhost:5000/products || exit 1
+        
+        echo "Testing /status endpoint..."
+        curl -f http://localhost:5000/status || exit 1
+        
+        echo "All endpoints are returning 200 status!"
+        
+        # Stop the Flask app
+        kill $APP_PID
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Deploy to production (simulation)
+      run: |
+        echo "Deploying to production..."
+        echo "All tests passed! API is ready for deployment."
+        echo "In a real scenario, this would deploy to your production environment."
