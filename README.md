@@ -1,91 +1,57 @@
-# Simple REST API with CI/CD Pipeline
-
-A simple Python Flask REST API with 5 endpoints that return 200 responses, complete with automated CI/CD pipeline using GitHub Actions.
-
-## 🚀 Features
-
-- **5 REST API Endpoints** that return 200 status codes
-- **Automated Testing** with pytest
-- **CI/CD Pipeline** using GitHub Actions
-- **Code Quality Checks** with flake8 linting
-- **Automated Deployment** simulation
-
-## 📋 API Endpoints
-
-| Endpoint | Method | Description | Response |
-|----------|--------|-------------|----------|
-| `/` | GET | Home endpoint with welcome message | 200 |
-| `/health` | GET | Health check endpoint | 200 |
-| `/users` | GET | Get list of users | 200 |
-| `/products` | GET | Get list of products | 200 |
-| `/status` | GET | API status information | 200 |
-
-## 🛠️ Setup and Installation
-
-### Prerequisites
-- Python 3.9 or higher
-- pip (Python package installer)
-
-### Local Development
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd CICD
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Run the application**
-   ```bash
-   python app.py
-   ```
-
-5. **Test the API**
-   ```bash
-   # Test individual endpoints
-   curl http://localhost:5000/
-   curl http://localhost:5000/health
-   curl http://localhost:5000/users
-   curl http://localhost:5000/products
-   curl http://localhost:5000/status
-   
-   # Run automated tests
-   python -m pytest test_api.py -v
-   ```
-
-## 🧪 Testing
-
-The project includes comprehensive tests to verify all 5 API endpoints return 200 status codes:
-
-```bash
-# Run all tests
-python -m pytest test_api.py -v
-
-# Run with coverage
-python -m pytest test_api.py --cov=app
-```
-
-### Test Coverage
-- ✅ Home endpoint (`/`) - 200 status
-- ✅ Health endpoint (`/health`) - 200 status  
-- ✅ Users endpoint (`/users`) - 200 status
-- ✅ Products endpoint (`/products`) - 200 status
-- ✅ Status endpoint (`/status`) - 200 status
 
 ## 🔄 CI/CD Pipeline
 
-The project uses GitHub Actions for continuous integration and deployment:
+Continues Integration/ Continues Development
 
+Basically its cover 3 major stage
+1. Build
+2. Test
+3. Deploy
+
+1. Build
+
+   As per your project require.txt pipeline will create a virtual server and insatll all dependancy  & module that is known as build phase.
+
+   If build phase complete it will go to next stage which is Testing & automation phase.
+
+2. Testing Phase
+
+   It cover your all testing like API giving 200 or not and expected result or not. 
+
+   If this phase fully pass meaning all listed test cases passed it will go to deploy phase.
+
+3. Deploye
+
+   In this phase project is good to go on production branch. meaning it will install all module or requirment from project requeirment.txt into Server.
+
+CICD is define in YML structure. on git hub we need to create .github folder and we can create as many as CICD files with extention .yml
+
+Where to check pipeline is runing or its status?
+
+   In github, select the repo, you will fine the 'Action' tab in this tab it will show status.
+
+Added on ci-cd.yml for better understand..!
+
+Basic creation of yml
+
+Name: {name of the cicd template}
+
+On: {This is phase where you need to mention on which branch change, you want to trigger the CICD}
+example
+On:  
+   push:
+      branches: [ main, develop ]
+   pull_request:
+      branches: [ main ]
+Job: {this phase we declare test & deploye}
+
+
+**WHEN YOU HAVE TIME I WILL SHOW YOU DEMO TOO..**
+
+
+More overview;
+
+The project uses GitHub Actions for continuous integration and deployment:
 ### Pipeline Stages
 
 1. **Code Quality Check**
@@ -118,51 +84,3 @@ CICD/
 ├── requirements.txt          # Python dependencies
 └── README.md                 # Project documentation
 ```
-
-## 🔧 Configuration
-
-### Environment Variables
-- `PORT`: Server port (default: 5000)
-- `ENVIRONMENT`: Environment name (default: development)
-
-### Dependencies
-- **Flask 2.3.3**: Web framework
-- **pytest 7.4.3**: Testing framework
-- **pytest-flask 1.2.0**: Flask testing utilities
-- **requests 2.31.0**: HTTP library for testing
-
-## 🚀 Deployment
-
-The CI/CD pipeline automatically:
-1. Runs tests on every push/PR
-2. Validates code quality
-3. Deploys to production (simulated) when tests pass on main branch
-
-## 📊 Monitoring
-
-All endpoints include health check capabilities:
-- `/health` - Basic health status
-- `/status` - Detailed API status and environment info
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-1. Check the [Issues](https://github.com/your-username/CICD/issues) page
-2. Create a new issue with detailed description
-3. Include steps to reproduce the problem
-
----
-
-**Happy Coding! 🎉**
